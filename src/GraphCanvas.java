@@ -3,10 +3,10 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 class GraphCanvas extends JPanel implements MouseListener {
-    enum Mode {ADD_NODE, REMOVE_NODE, ADD_EDGE, REMOVE_EDGE, BFS, DFS, SHORTEST_PATH, TOPOLOGICAL_SORT}
+    enum Mode {ADD_NODE, REMOVE_NODE, ADD_EDGE, REMOVE_EDGE, BFS, DFS, SHORTEST_PATH,
+        TOPOLOGICAL_SORT}
 
     private Mode mode;
     private ArrayList<Node> nodes;
@@ -21,8 +21,8 @@ class GraphCanvas extends JPanel implements MouseListener {
     public GraphCanvas() {
         setPreferredSize(new Dimension(400, 400));
         addMouseListener(this);
-        nodes = new ArrayList<Node>();
-        edges = new ArrayList<Edge>();
+        nodes = new ArrayList<>();
+        edges = new ArrayList<>();
     }
 
     public void setMode(Mode mode) {
@@ -59,6 +59,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                         repaint();
                         validInput = true;
                         mode = null;
+                        GraphGUI.resetStatusBar();
                     } else {
                         JOptionPane.showMessageDialog(this, "A node with that letter already exists.");
                         validInput = true;
@@ -86,6 +87,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                             (edge -> edge.getPrecedingNode().equals(removed) || edge.getSucceedingNode().equals(removed));
                     repaint();
                     mode = null;
+                    GraphGUI.resetStatusBar();
                     break;
                 }
             }
@@ -143,6 +145,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                         repaint();
                         validInput = true;
                         mode = null;
+                        GraphGUI.resetStatusBar();
 
                     } else if (n == JOptionPane.NO_OPTION) {
                         System.out.println("Undirected");
@@ -171,6 +174,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                         startNode = null;
                         endNode = null;
                         mode = null;
+                        GraphGUI.resetStatusBar();
                     }
                 }
             }
@@ -194,43 +198,25 @@ class GraphCanvas extends JPanel implements MouseListener {
                     }
                 }
 
-                edges.removeIf
-                        (edge -> edge.getPrecedingNode().equals(startRemoveEdgeNode) && edge.getSucceedingNode().equals(endRemoveEdgeNode));
-                System.out.println("Edge Removed");
+                boolean edgeRemoved = edges.removeIf
+                        (edge -> (edge.getPrecedingNode().equals(startRemoveEdgeNode) &&
+                                edge.getSucceedingNode().equals(endRemoveEdgeNode)) ||
+                                (edge.getPrecedingNode().equals(endRemoveEdgeNode) &&
+                                        edge.getSucceedingNode().equals(startRemoveEdgeNode) &&
+                                        !edge.getIsDirected()));
+                if (edgeRemoved) {
+                    System.out.println("Edge Removed");
+                }
+                else {
+                    System.out.println("No edge removed");
+                }
+
                 repaint();
                 startRemoveEdgeNode = null;
                 endRemoveEdgeNode = null;
                 mode = null;
+                GraphGUI.resetStatusBar();
             }
-
-            /*
-            startNode = null;
-            endNode = null;
-
-            for (Node node : nodes) {
-                if (node.contains(e.getX(), e.getY())) {
-                    startNode = node;
-                    System.out.println("Remove Edge Start: " + startNode);
-                    break;
-                }
-            }
-
-            for (Node node : nodes) {
-                if (node.contains(e.getX(), e.getY())) {
-                    endNode = node;
-                    System.out.println("Remove Edge End: " + endNode);
-                    break;
-                }
-            }
-
-            edges.removeIf
-                    (edge -> edge.getPrecedingNode().equals(startNode) && edge.getSucceedingNode().equals(endNode));
-            repaint();
-            startNode = null;
-            endNode = null;
-            mode = null;
-
-             */
         }
     }
 

@@ -12,7 +12,8 @@ public class GraphGUI extends JFrame {
     private JButton DFS;
     private JButton shortestPath;
     private JButton topologicalSort;
-    private JLabel statusBar;
+    private JButton reset;
+    private static JLabel statusBar;
 
     public GraphGUI() {
         super("Graph GUI");
@@ -30,9 +31,9 @@ public class GraphGUI extends JFrame {
 
         addNodeButton = new JButton("Add Node");
         addNodeButton.addActionListener(e -> {
-            canvas.setMode(GraphCanvas.Mode.ADD_NODE);
             statusBar.setText("Click on the Canvas to ADD a node.");
             statusBar.setForeground(Color.BLUE);
+            canvas.setMode(GraphCanvas.Mode.ADD_NODE);
         });
         buttonPanel.add(addNodeButton);
 
@@ -53,8 +54,11 @@ public class GraphGUI extends JFrame {
         buttonPanel.add(addEdgeButton);
 
         removeEdgeButton = new JButton("Remove Edge");
-        removeEdgeButton.addActionListener(e -> {canvas.setMode(GraphCanvas.Mode.REMOVE_EDGE);
-            statusBar.setText("Click on two nodes to remove the edge between them. Order matters for directed edges.");});
+        removeEdgeButton.addActionListener(e -> {
+            canvas.setMode(GraphCanvas.Mode.REMOVE_EDGE);
+            statusBar.setText("Click on two nodes to remove the edge between them. Order matters for directed edges.");
+            statusBar.setForeground(Color.RED);
+        });
         buttonPanel.add(removeEdgeButton);
 
         BFS = new JButton("BFS");
@@ -104,10 +108,16 @@ public class GraphGUI extends JFrame {
         statusBar.setHorizontalAlignment(SwingConstants.CENTER);
         Font font = statusBar.getFont();
         statusBar.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
+        statusBar.setText("Click on a button at the bottom.");
         add(statusBar, BorderLayout.NORTH);
 
         pack();
         setVisible(true);
+    }
+
+    public static void resetStatusBar() {
+        statusBar.setText("Click on a button at the bottom.");
+        statusBar.setForeground(Color.BLACK);
     }
 
     public static void main(String[] args) {
