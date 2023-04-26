@@ -23,16 +23,15 @@ public class GraphAlgorithms {
     }
 
     static void BFS(Node startingNode) {
-        Queue<Node> queue = new ArrayDeque<Node>();
-        HashSet<Node> visited = new HashSet<Node>();
-        ArrayList<Node> order = new ArrayList<Node>();
+        Queue<Node> queue = new ArrayDeque<>();
+        HashSet<Node> visited = new HashSet<>();
 
         queue.add(startingNode);
         visited.add(startingNode);
 
         while (!queue.isEmpty()) {
             Node current = queue.poll();
-            order.add(current);
+            bfsOrdering.add(current);
 
             for (Edge edge : adjacencyList.get(current)) {
                 Node neighbor = edge.getSucceedingNode();
@@ -44,7 +43,7 @@ public class GraphAlgorithms {
         }
 
         System.out.println("BFS Order: ");
-        for (Node node : order) {
+        for (Node node : bfsOrdering) {
             System.out.print(node.getName() + " ");
         }
         System.out.println();
