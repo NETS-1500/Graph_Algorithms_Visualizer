@@ -66,6 +66,8 @@ public class GraphGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 canvas.setMode(GraphCanvas.Mode.BFS);
+                statusBar.setText("Click on the starting node.");
+                statusBar.setForeground(Color.BLUE);
             }
         });
         algorithmButtonPanel.add(BFS);
