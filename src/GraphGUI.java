@@ -53,8 +53,8 @@ public class GraphGUI extends JFrame {
         buttonPanel.add(addEdgeButton);
 
         removeEdgeButton = new JButton("Remove Edge");
-        removeEdgeButton.addActionListener(e -> canvas.setMode(GraphCanvas.Mode.REMOVE_EDGE));
-        statusBar.setText("Click on two nodes to remove the edge between them. Order matters for directed edges.");
+        removeEdgeButton.addActionListener(e -> {canvas.setMode(GraphCanvas.Mode.REMOVE_EDGE);
+            statusBar.setText("Click on two nodes to remove the edge between them. Order matters for directed edges.");});
         buttonPanel.add(removeEdgeButton);
 
         BFS = new JButton("BFS");

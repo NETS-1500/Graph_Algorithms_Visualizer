@@ -95,7 +95,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNode = node;
-                        System.out.println("Add Edge Start Node: " + startNode);
+                        System.out.println(startNode);
                         break;
                     }
                 }
@@ -104,7 +104,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         endNode = node;
-                        System.out.println("Add Edge End Node: " + endNode);
+                        System.out.println(endNode);
                         break;
                     }
                 }
@@ -140,13 +140,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                             }
                         }
                         edges.add(new Edge(startNode, endNode, input, true));
-                        System.out.println("Edge Added Start Node: " + startNode);
-                        System.out.println("Edge Added End Node: " + endNode);
-
                         repaint();
                         validInput = true;
-                        startNode = null;
-                        endNode = null;
                         mode = null;
 
                     } else if (n == JOptionPane.NO_OPTION) {
