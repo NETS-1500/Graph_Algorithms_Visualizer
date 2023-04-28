@@ -1,10 +1,10 @@
 import java.awt.*;
 
 public class Edge {
-    private Node nodeA;
-    private Node nodeB;
-    private int weight;
-    private boolean directed;
+    private final Node nodeA;
+    private final Node nodeB;
+    private final int weight;
+    private final boolean directed;
 
     public Edge (Node nodeA, Node nodeB, int weight, boolean directed) {
         this.nodeA = nodeA;

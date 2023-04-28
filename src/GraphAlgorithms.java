@@ -25,6 +25,7 @@ public class GraphAlgorithms {
     static void BFS(Node startingNode) {
         Queue<Node> queue = new ArrayDeque<>();
         HashSet<Node> visited = new HashSet<>();
+        bfsOrdering.clear();
 
         queue.add(startingNode);
         visited.add(startingNode);
@@ -50,25 +51,22 @@ public class GraphAlgorithms {
     }
 
     public static ArrayList<Node> getBfsOrdering() {
-        return bfsOrdering;
+        return GraphAlgorithms.bfsOrdering;
     }
 
     static HashMap<Node, Node> Dijkstra(Node source) {
         HashMap<Node, Integer> distances = new HashMap<>();
         HashMap<Node, Node> parents = new HashMap<>();
-        Queue<Node> minQ = new PriorityQueue<>(new Comparator<Node>() {
-            @Override
-            public int compare(Node o1, Node o2) {
-                int dist1 = distances.get(o1);
-                int dist2 = distances.get(o2);
+        Queue<Node> minQ = new PriorityQueue<>((o1, o2) -> {
+            int dist1 = distances.get(o1);
+            int dist2 = distances.get(o2);
 
-                if (dist1 < dist2) {
-                    return -1;
-                } else if (dist1 > dist2) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+            if (dist1 < dist2) {
+                return -1;
+            } else if (dist1 > dist2) {
+                return 1;
+            } else {
+                return 0;
             }
         });
 
@@ -115,7 +113,6 @@ public class GraphAlgorithms {
         Node curr = target;
         while (curr != null) {
             path.add(0, curr);
-
             if (curr.equals(source)) {
                 return path;
             } else {
