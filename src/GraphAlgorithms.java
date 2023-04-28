@@ -82,11 +82,9 @@ public class GraphAlgorithms {
         minQ.remove(source);
         distances.replace(source, 0);
         minQ.add(source);
-        HashSet<Node> found = new HashSet<>();
 
         while (!minQ.isEmpty()) {
             Node u = minQ.poll();
-            found.add(u);
 
             LinkedList<Edge> neighbors = adjacencyList.get(u);
             for (Edge edge : neighbors) {
