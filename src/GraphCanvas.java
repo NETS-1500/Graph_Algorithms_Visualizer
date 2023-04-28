@@ -216,7 +216,6 @@ class GraphCanvas extends JPanel implements MouseListener {
                     }
                 }
             } else {
-                // TODO: No self-loops not working
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         endRemoveEdgeNode = node;
@@ -299,8 +298,21 @@ class GraphCanvas extends JPanel implements MouseListener {
                 GraphAlgorithms.createAdjacencyList(nodes, edges);
                 LinkedList<Node> path = GraphAlgorithms.shortestPathTo(startNodeShortPath, endNodeShortPath);
                 if (path.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "There is no path from " +
+                            startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + "!", "Shortest Path",
+                            JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("No path from " + startNodeShortPath.getName() + " to " + endNodeShortPath.getName());
                 } else {
+                    String pathString = "";
+                    for (int i = 0; i < path.size(); i++) {
+                        pathString += path.get(i).getName();
+                        if (i != path.size() - 1) {
+                            pathString += " -> ";
+                        }
+                    }
+                    JOptionPane.showMessageDialog(this, pathString, "Shortest Path from " +
+                            startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
+                            JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("Shortest path from " + startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":");
                     for (Node node : path) {
                         System.out.println(node.getName());
