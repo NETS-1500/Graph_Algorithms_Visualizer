@@ -21,6 +21,8 @@ class GraphCanvas extends JPanel implements MouseListener {
 
     private Node startNodeBFS = null;
 
+    private Node startNodeDFS = null;
+
     private Node startNodeShortPath = null;
     private Node endNodeShortPath = null;
 
@@ -287,7 +289,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                 LinkedList<Node> path = GraphAlgorithms.shortestPathTo(startNodeShortPath, endNodeShortPath);
                 if (path.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "There is no path from " +
-                            startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + "!", "Shortest Path",
+                                    startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + "!", "Shortest Path",
                             JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("No path from " + startNodeShortPath.getName() + " to " + endNodeShortPath.getName());
                 } else {
@@ -299,7 +301,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                         }
                     }
                     JOptionPane.showMessageDialog(this, pathString, "Shortest Path from " +
-                            startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
+                                    startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
                             JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("Shortest path from " + startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":");
                     for (Node node : path) {
@@ -311,6 +313,22 @@ class GraphCanvas extends JPanel implements MouseListener {
                 startNodeShortPath = null;
                 endNodeShortPath = null;
             }
+        }
+        else if(mode == Mode.DFS) {
+            if (startNodeDFS == null) {
+                for (Node node : nodes) {
+                    if (node.contains(e.getX(), e.getY())) {
+                        startNodeDFS = node;
+                        System.out.println("BFS Start Node: " + startNodeDFS + " | " + startNodeDFS.getName());
+                        break;
+                    }
+                }
+            }
+
+            GraphAlgorithms.createAdjacencyList(nodes, edges);
+            System.out.println(GraphAlgorithms.getAdjacencyList());
+
+            GraphAlgorithms.DFS(startNodeDFS);
         }
     }
 
