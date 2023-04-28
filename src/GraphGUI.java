@@ -72,7 +72,6 @@ public class GraphGUI extends JFrame {
         });
         algorithmButtonPanel.add(BFS);
 
-
         DFS = new JButton("DFS");
         DFS.addActionListener(new ActionListener() {
             @Override
