@@ -127,5 +127,4 @@ public class GraphAlgorithms {
     public static HashMap<Node, LinkedList<Edge>> getAdjacencyList() {
         return adjacencyList;
     }
-
 }
