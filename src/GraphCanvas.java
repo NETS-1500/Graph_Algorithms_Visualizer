@@ -117,82 +117,93 @@ class GraphCanvas extends JPanel implements MouseListener {
                     }
                 }
             } else {
-                // TODO: No self-loops not working
+
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         endNode = node;
-                        System.out.println("Add Edge End Node: " + endNode + " | " + endNode.getName());
+                        if (!endNode.equals(startNode)) {
+                            System.out.println("Add Edge End Node: " + endNode + " | " + endNode.getName());
+                        }
                         break;
                     }
                 }
 
-                // Display the directed/undirected popup and input the edge weight
-                boolean validInput = false;
-                while (!validInput) {
-                    Object[] options = {"Directed", "Undirected"};
-                    int n = JOptionPane.showOptionDialog(this,
-                            "Is this a directed or undirected edge?",
-                            "Edge Type",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            options,
-                            options[0]);
-                    if (n == JOptionPane.YES_OPTION) {
-                        System.out.println("Directed");
-                        int input = -1;
-                        while (input < 0) {
-                            String inputStr = JOptionPane.showInputDialog("Please enter a non-negative edge weight:");
-                            try {
-                                input = Integer.parseInt(inputStr);
-                                if (input < 0) {
+                //makes sure no self edges allowed
+                if (startNode.equals(endNode)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Self-edges not allowed! Please choose another end node.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    endNode = null;
+                } else {
+                    // Display the directed/undirected popup and input the edge weight
+                    boolean validInput = false;
+                    while (!validInput) {
+                        Object[] options = {"Directed", "Undirected"};
+                        int n = JOptionPane.showOptionDialog(this,
+                                "Is this a directed or undirected edge?",
+                                "Edge Type",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                options,
+                                options[0]);
+                        if (n == JOptionPane.YES_OPTION) {
+                            System.out.println("Directed");
+                            int input = -1;
+                            while (input < 0) {
+                                String inputStr = JOptionPane.showInputDialog("Please enter a non-negative edge weight:");
+                                try {
+                                    input = Integer.parseInt(inputStr);
+                                    if (input < 0) {
+                                        JOptionPane.showMessageDialog(this,
+                                                "Please enter a non-negative edge weight:",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                } catch (NumberFormatException ex) {
                                     JOptionPane.showMessageDialog(this,
-                                            "Please enter a non-negative edge weight:",
+                                            "Please enter a non-negative edge weight.",
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                 }
-                            } catch (NumberFormatException ex) {
-                                JOptionPane.showMessageDialog(this,
-                                        "Please enter a non-negative edge weight.",
-                                        "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                        }
-                        edges.add(new Edge(startNode, endNode, input, true));
+                            edges.add(new Edge(startNode, endNode, input, true));
 
-                        repaint();
-                        validInput = true;
-                        startNode = null;
-                        endNode = null;
-                        mode = null;
-                        GraphGUI.resetStatusBar();
+                            repaint();
+                            validInput = true;
+                            startNode = null;
+                            endNode = null;
+                            mode = null;
+                            GraphGUI.resetStatusBar();
 
-                    } else if (n == JOptionPane.NO_OPTION) {
-                        System.out.println("Undirected");
-                        int input = -1;
-                        while (input < 0) {
-                            String inputStr = JOptionPane.showInputDialog("Please enter a non-negative edge weight:");
-                            try {
-                                input = Integer.parseInt(inputStr);
-                                if (input < 0) {
+                        } else if (n == JOptionPane.NO_OPTION) {
+                            System.out.println("Undirected");
+                            int input = -1;
+                            while (input < 0) {
+                                String inputStr = JOptionPane.showInputDialog("Please enter a non-negative edge weight:");
+                                try {
+                                    input = Integer.parseInt(inputStr);
+                                    if (input < 0) {
+                                        JOptionPane.showMessageDialog(this,
+                                                "Please enter a non-negative edge weight:",
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                } catch (NumberFormatException ex) {
                                     JOptionPane.showMessageDialog(this,
-                                            "Please enter a non-negative edge weight:",
+                                            "Please enter a non-negative edge weight.",
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                 }
-                            } catch (NumberFormatException ex) {
-                                JOptionPane.showMessageDialog(this,
-                                        "Please enter a non-negative edge weight.",
-                                        "Error", JOptionPane.ERROR_MESSAGE);
                             }
-                        }
-                        edges.add(new Edge(startNode, endNode, input, false));
+                            edges.add(new Edge(startNode, endNode, input, false));
 
-                        repaint();
-                        validInput = true;
-                        startNode = null;
-                        endNode = null;
-                        mode = null;
-                        GraphGUI.resetStatusBar();
+                            repaint();
+                            validInput = true;
+                            startNode = null;
+                            endNode = null;
+                            mode = null;
+                            GraphGUI.resetStatusBar();
+                        }
                     }
                 }
+
             }
         }
         else if (mode == Mode.REMOVE_EDGE) {
