@@ -3,9 +3,9 @@ import java.awt.*;
 class Node {
     private static final int RADIUS = 15;
 
-    private String name;
-    private int x;
-    private int y;
+    private final String name;
+    private final int x;
+    private final int y;
 
     public Node(String name, int x, int y) {
         this.name = name;
@@ -66,6 +66,5 @@ class Node {
         }
 
         return true;
-
     }
 }
