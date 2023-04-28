@@ -3,6 +3,8 @@ import java.util.*;
 public class GraphAlgorithms {
 
     private static ArrayList<Node> bfsOrdering;
+    private static ArrayList<Node> dfsOrdering;
+    private static HashMap<Node,int[]> startFinishTimes;
     private static HashMap<Node, LinkedList<Edge>> adjacencyList;
 
     static void createAdjacencyList(ArrayList<Node> nodes, ArrayList<Edge> edges) {
@@ -126,5 +128,76 @@ public class GraphAlgorithms {
 
     public static HashMap<Node, LinkedList<Edge>> getAdjacencyList() {
         return adjacencyList;
+    }
+
+    public static void DFS(Node startingNode) {
+        //initializing stack to implement DFS
+        Stack<Node> stack = new Stack<>();
+
+        //keeping track of nodes visited to not have repeats in the stack
+        HashSet<Node> visited = new HashSet<>();
+
+        //a clock to keep track of the current time
+        int time = 0;
+
+        //clearing the dfs arraylist in case user has called dfs before
+        dfsOrdering.clear();
+
+        stack.add(startingNode);
+        visited.add(startingNode);
+
+        while (!stack.isEmpty()) {
+            Node current = stack.lastElement();
+            dfsOrdering.add(current);
+
+            //when we see the node for the first time, allocate start time
+            int[] temp = new int[2];
+            temp[0] = time++;
+            startFinishTimes.put(current,temp);
+
+            //boolean to check whether all neighbors have been visited
+            boolean visitedAllNeighbors = true;
+            for (Edge edge : adjacencyList.get(current)) {
+                Node neighbor = edge.getSucceedingNode();
+                if (!visited.contains(neighbor)) {
+                    visitedAllNeighbors = false;
+                    stack.add(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+            //if there are no neigbors that we haven't already visited for this node,
+            // allocate finish time
+            //assumption: the start time has already been given
+            if(visitedAllNeighbors == true) {
+                int[] end = startFinishTimes.get(current);
+                end[1] = time++;
+                startFinishTimes.put(current,end);
+                //now we need to go back to the nodes that we have already assigned start times to
+                //and see if we need to give them a finish time
+                for (int i = dfsOrdering.size() - 2; i >= 0; i--) {
+                    int[] times = startFinishTimes.get(dfsOrdering.get(i));
+                    //if there has not been an end time assigned, the second value should be 0
+                    //this is insurance that we do not overwrite any previous assignments
+                    if(times[1] == 0) {
+                        for (Edge edge : adjacencyList.get(dfsOrdering.get(i))) {
+                            Node neighbor = edge.getSucceedingNode();
+                            //if all neighbors of this node have been removed from the stack, this means
+                            //we have exhausted its neighbors already, we need to assign end time
+                            if (!stack.contains(neighbor)) {
+                                int[] prevEnd = startFinishTimes.get(dfsOrdering.get(i));
+                                prevEnd[1] = time++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("DFS Order: ");
+        for (Node node : dfsOrdering) {
+            System.out.print(node.getName() + " , Start/Finish: " + startFinishTimes.get(node)[0] + "/"
+                    + startFinishTimes.get(node)[1]);
+        }
+        System.out.println();
     }
 }
