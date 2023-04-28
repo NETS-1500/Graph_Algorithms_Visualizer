@@ -3,8 +3,8 @@ import java.util.*;
 public class GraphAlgorithms {
 
     private static ArrayList<Node> bfsOrdering;
-    private static ArrayList<Node> dfsOrdering;
-    private static HashMap<Node,int[]> startFinishTimes;
+    private static ArrayList<Node> dfsOrdering = new ArrayList<>();
+    private static HashMap<Node,int[]> startFinishTimes = new HashMap<>();
     private static HashMap<Node, LinkedList<Edge>> adjacencyList;
 
     static void createAdjacencyList(ArrayList<Node> nodes, ArrayList<Edge> edges) {
@@ -167,7 +167,6 @@ public class GraphAlgorithms {
             }
             //if there are no neigbors that we haven't already visited for this node,
             // allocate finish time
-            //assumption: the start time has already been given
             if(visitedAllNeighbors == true) {
                 int[] end = startFinishTimes.get(current);
                 end[1] = time++;

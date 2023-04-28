@@ -154,6 +154,26 @@ class GraphCanvas extends JPanel implements MouseListener {
                 }
             }
         }
+        else if(mode == Mode.DFS) {
+            boolean validInput = false;
+            while(!validInput) {
+                String startNode = JOptionPane.showInputDialog(this, "Enter a root node:");
+                for (Node node : nodes) {
+                    if (node.getName().equals(startNode)) {
+                        validInput = true;
+                        GraphAlgorithms.DFS(node);
+                    }
+                }
+                if(!validInput) {
+                    int result = JOptionPane.showConfirmDialog
+                            (this, "Invalid input. Try again?", "Invalid Input",
+                                    JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.NO_OPTION) {
+                        validInput = true;
+                    }
+                }
+            }
+        }
     }
 
     public void mouseEntered(MouseEvent e) {}

@@ -77,6 +77,9 @@ public class GraphGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 canvas.setMode(GraphCanvas.Mode.DFS);
+                statusBar.setText("Click graph to get started");
+                statusBar.setForeground(Color.BLUE);
+
             }
         });
         algorithmButtonPanel.add(DFS);
