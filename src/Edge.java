@@ -6,6 +6,7 @@ public class Edge {
     private final int weight;
     private final boolean directed;
 
+
     public Edge (Node nodeA, Node nodeB, int weight, boolean directed) {
         this.nodeA = nodeA;
         this.nodeB = nodeB;

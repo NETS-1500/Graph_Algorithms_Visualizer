@@ -7,6 +7,7 @@ class Node {
     private final int x;
     private final int y;
 
+
     public Node(String name, int x, int y) {
         this.name = name;
         this.x = x;
