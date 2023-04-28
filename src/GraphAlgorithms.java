@@ -53,6 +53,82 @@ public class GraphAlgorithms {
         return bfsOrdering;
     }
 
+    static HashMap<Node, Node> Dijkstra(Node source) {
+        HashMap<Node, Integer> distances = new HashMap<>();
+        HashMap<Node, Node> parents = new HashMap<>();
+        Queue<Node> minQ = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                int dist1 = distances.get(o1);
+                int dist2 = distances.get(o2);
+
+                if (dist1 < dist2) {
+                    return -1;
+                } else if (dist1 > dist2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        Set<Node> nodes = adjacencyList.keySet();
+        for (Node node : nodes) {
+            distances.put(node, Integer.MAX_VALUE);
+            parents.put(node, null);
+            minQ.add(node);
+        }
+
+        minQ.remove(source);
+        distances.replace(source, 0);
+        minQ.add(source);
+        HashSet<Node> found = new HashSet<>();
+
+        while (!minQ.isEmpty()) {
+            Node u = minQ.poll();
+            found.add(u);
+
+            LinkedList<Edge> neighbors = adjacencyList.get(u);
+            for (Edge edge : neighbors) {
+                Node v = edge.getSucceedingNode();
+                int distU = distances.get(u);
+                int distV = distances.get(v);
+
+                if (minQ.contains(v) && distV > distU + edge.getWeight()) {
+                    minQ.remove(v);
+                    distances.replace(v, distU + edge.getWeight());
+                    minQ.add(v);
+                    parents.put(v, u);
+                }
+            }
+        }
+        return parents;
+    }
+
+    public static LinkedList<Node> shortestPathTo(Node source, Node target) {
+        LinkedList<Node> path = new LinkedList<>();
+        if (source.equals(target)) {
+            path.add(source);
+            return path;
+        }
+
+        HashMap<Node, Node> parents = Dijkstra(source);
+
+        Node curr = target;
+        while (curr != null) {
+            path.add(0, curr);
+
+            if (curr.equals(source)) {
+                return path;
+            } else {
+                curr = parents.get(curr);
+            }
+        }
+
+        path.clear();
+        return path;
+    }
+
     public static HashMap<Node, LinkedList<Edge>> getAdjacencyList() {
         return adjacencyList;
     }

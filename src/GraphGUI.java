@@ -85,7 +85,10 @@ public class GraphGUI extends JFrame {
         shortestPath.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 canvas.setMode(GraphCanvas.Mode.SHORTEST_PATH);
+                statusBar.setText("Click on two nodes to get the shortest path between them.");
+                statusBar.setForeground(Color.BLUE);
             }
         });
         algorithmButtonPanel.add(shortestPath);

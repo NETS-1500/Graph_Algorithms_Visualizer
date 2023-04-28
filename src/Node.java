@@ -36,4 +36,36 @@ class Node {
         g.drawString(name, x - g.getFontMetrics().stringWidth(name) / 2, y + g.getFontMetrics().getAscent() / 2);
         g.setFont(originalFont);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Node)) {
+            return false;
+        }
+
+        Node o = (Node) obj;
+
+        if (!o.name.equals(this.name)) {
+            return false;
+        }
+
+        if (o.x != this.x) {
+            return false;
+        }
+
+        if (o.y != this.y) {
+            return false;
+        }
+
+        return true;
+
+    }
 }

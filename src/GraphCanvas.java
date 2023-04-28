@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 class GraphCanvas extends JPanel implements MouseListener {
     enum Mode {ADD_NODE, REMOVE_NODE, ADD_EDGE, REMOVE_EDGE, BFS, DFS, SHORTEST_PATH,
@@ -19,6 +20,9 @@ class GraphCanvas extends JPanel implements MouseListener {
     private Node endRemoveEdgeNode = null;
 
     private Node startNodeBFS = null;
+
+    private Node startNodeShortPath = null;
+    private Node endNodeShortPath = null;
 
     public GraphCanvas() {
         setPreferredSize(new Dimension(400, 400));
@@ -259,6 +263,47 @@ class GraphCanvas extends JPanel implements MouseListener {
             System.out.println(GraphAlgorithms.getAdjacencyList());
 
             GraphAlgorithms.BFS(startNodeBFS);
+        }
+
+
+        else if (mode == Mode.SHORTEST_PATH) {
+
+            if (startNodeShortPath == null) {
+                for (Node node : nodes) {
+                    if (node.contains(e.getX(), e.getY())) {
+                        startNodeShortPath = node;
+                        System.out.println("Shortest Path Start Node: " + startNodeShortPath + " | " + startNodeShortPath.getName());
+                        break;
+                    }
+                }
+            } else {
+                for (Node node : nodes) {
+                    if (node.contains(e.getX(), e.getY())) {
+                        endNodeShortPath = node;
+                        System.out.println("Shortest Path End Node: " + endNodeShortPath + " | " + endNodeShortPath.getName());
+                        break;
+                    }
+                }
+
+                GraphAlgorithms.createAdjacencyList(nodes, edges);
+                LinkedList<Node> path = GraphAlgorithms.shortestPathTo(startNodeShortPath, endNodeShortPath);
+                if (path.isEmpty()) {
+                    System.out.println("No path from " + startNodeShortPath.getName() + " to " + endNodeShortPath.getName());
+                } else {
+                    System.out.println("Shortest path from " + startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":");
+                    for (Node node : path) {
+                        System.out.println(node.getName());
+                    }
+
+                }
+
+                GraphGUI.resetStatusBar();
+                startNodeShortPath = null;
+                endNodeShortPath = null;
+
+
+            }
+
         }
     }
 
