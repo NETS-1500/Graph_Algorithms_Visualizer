@@ -23,6 +23,8 @@ class GraphCanvas extends JPanel implements MouseListener {
 
     private Node startNodeDFS = null;
 
+    private Node startNodeTPS = null;
+
     private Node startNodeShortPath = null;
     private Node endNodeShortPath = null;
 
@@ -329,6 +331,27 @@ class GraphCanvas extends JPanel implements MouseListener {
             System.out.println(GraphAlgorithms.getAdjacencyList());
 
             GraphAlgorithms.DFS(startNodeDFS);
+
+            ArrayList order = GraphAlgorithms.getDfsOrdering();
+            //figure out how to get pop-up
+
+        }
+
+        else if(mode == Mode.TOPOLOGICAL_SORT) {
+            if (startNodeTPS == null) {
+                for (Node node : nodes) {
+                    if (node.contains(e.getX(), e.getY())) {
+                        startNodeTPS = node;
+                        System.out.println("BFS Start Node: " + startNodeTPS + " | " + startNodeTPS.getName());
+                        break;
+                    }
+                }
+            }
+
+            GraphAlgorithms.createAdjacencyList(nodes, edges);
+            System.out.println(GraphAlgorithms.getAdjacencyList());
+
+            GraphAlgorithms.topoSort(startNodeTPS);
         }
     }
 

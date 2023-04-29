@@ -5,6 +5,7 @@ public class GraphAlgorithms {
     private static ArrayList<Node> bfsOrdering = new ArrayList<>();
     private static HashMap<Node, LinkedList<Edge>> adjacencyList;
     private static ArrayList<Node> dfsOrdering = new ArrayList<>();
+    private static ArrayList<Node> topologicalSort = new ArrayList<>();
     private static HashMap<Node,int[]> startFinishTimes = new HashMap<>();
 
     static void createAdjacencyList(ArrayList<Node> nodes, ArrayList<Edge> edges) {
@@ -28,6 +29,7 @@ public class GraphAlgorithms {
         Queue<Node> queue = new ArrayDeque<>();
         HashSet<Node> visited = new HashSet<>();
         bfsOrdering.clear();
+        startFinishTimes.clear();
 
         queue.add(startingNode);
         visited.add(startingNode);
@@ -154,6 +156,7 @@ public class GraphAlgorithms {
 
             //when we see the node for the first time, allocate start time
             int[] temp = new int[2];
+            System.out.println("time1");
             temp[0] = time++;
             startFinishTimes.put(current,temp);
 
@@ -174,6 +177,7 @@ public class GraphAlgorithms {
             if(visitedAllNeighbors == true) {
                 int[] end = startFinishTimes.get(current);
                 end[1] = time++;
+                System.out.println("time2");
                 startFinishTimes.put(current,end);
                 //now we need to go back to the nodes that we have already assigned start times to
                 //and see if we need to give them a finish time
@@ -181,15 +185,20 @@ public class GraphAlgorithms {
                     int[] times = startFinishTimes.get(dfsOrdering.get(i));
                     //if there has not been an end time assigned, the second value should be 0
                     //this is insurance that we do not overwrite any previous assignments
+                    boolean neighborsNotInStack = true;
                     if(times[1] == 0) {
                         for (Edge edge : adjacencyList.get(dfsOrdering.get(i))) {
                             Node neighbor = edge.getSucceedingNode();
                             //if all neighbors of this node have been removed from the stack, this means
                             //we have exhausted its neighbors already, we need to assign end time
-                            if (!stack.contains(neighbor)) {
-                                int[] prevEnd = startFinishTimes.get(dfsOrdering.get(i));
-                                prevEnd[1] = time++;
+                            if (stack.contains(neighbor)) {
+                                neighborsNotInStack = false;
                             }
+                        }
+                        if(neighborsNotInStack) {
+                            int[] prevEnd = startFinishTimes.get(dfsOrdering.get(i));
+                            prevEnd[1] = time++;
+                            System.out.println("time 3");
                         }
                     }
                 }
@@ -202,5 +211,34 @@ public class GraphAlgorithms {
                     + startFinishTimes.get(node)[1] + ") ");
         }
         System.out.println();
+    }
+
+    public static ArrayList<Node> getDfsOrdering() {
+        return dfsOrdering;
+    }
+
+    public static void topoSort(Node sourceNode) {
+        System.out.println("topo called");
+        DFS(sourceNode);
+        int max = 0;
+        ArrayList prevMaxes = new ArrayList<>();
+        while(topologicalSort.size() != startFinishTimes.size()) {
+            for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
+                if (entry.getValue()[1] > max && !prevMaxes.contains(entry.getValue()[1])) {
+                    max = entry.getValue()[1];
+                }
+            }
+            for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
+                if (entry.getValue()[1] == max) {
+                    topologicalSort.add(entry.getKey());
+                    prevMaxes.add(max);
+                }
+            }
+            max = 0;
+        }
+        System.out.println("Topological order: ");
+        for (Node n: topologicalSort) {
+            System.out.print(n.getName() + " ");
+        }
     }
 }

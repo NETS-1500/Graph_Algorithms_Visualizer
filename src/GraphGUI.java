@@ -100,6 +100,8 @@ public class GraphGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 canvas.setMode(GraphCanvas.Mode.TOPOLOGICAL_SORT);
+                statusBar.setText("Click on a source node");
+                statusBar.setForeground(Color.BLUE);
             }
         });
         algorithmButtonPanel.add(topologicalSort);
