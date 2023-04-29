@@ -156,7 +156,6 @@ public class GraphAlgorithms {
 
             //when we see the node for the first time, allocate start time
             int[] temp = new int[2];
-            System.out.println("time1");
             temp[0] = time++;
             startFinishTimes.put(current,temp);
 
@@ -165,8 +164,8 @@ public class GraphAlgorithms {
             for (Edge edge : adjacencyList.get(current)) {
                 Node neighbor = edge.getSucceedingNode();
                 if (!visited.contains(neighbor)) {
-                    System.out.println("added to stack");
                     visitedAllNeighbors = false;
+                    System.out.println("added to stack");
                     stack.add(neighbor);
                     visited.add(neighbor);
                 }
@@ -177,10 +176,12 @@ public class GraphAlgorithms {
             if(visitedAllNeighbors == true) {
                 int[] end = startFinishTimes.get(current);
                 end[1] = time++;
-                System.out.println("time2");
                 startFinishTimes.put(current,end);
                 //now we need to go back to the nodes that we have already assigned start times to
                 //and see if we need to give them a finish time
+
+                //i need an edge case where even if a previous node has already visited this node and added it to the stack
+                //if my current node neighbors it, it needs to have the next start time
                 for (int i = dfsOrdering.size() - 1; i >= 0; i--) {
                     int[] times = startFinishTimes.get(dfsOrdering.get(i));
                     //if there has not been an end time assigned, the second value should be 0
@@ -198,7 +199,6 @@ public class GraphAlgorithms {
                         if(neighborsNotInStack) {
                             int[] prevEnd = startFinishTimes.get(dfsOrdering.get(i));
                             prevEnd[1] = time++;
-                            System.out.println("time 3");
                         }
                     }
                 }
@@ -228,10 +228,10 @@ public class GraphAlgorithms {
                     max = entry.getValue()[1];
                 }
             }
+            prevMaxes.add(max);
             for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
-                if (entry.getValue()[1] == max) {
+                if (entry.getValue()[1] == max && !topologicalSort.contains(entry.getKey())) {
                     topologicalSort.add(entry.getKey());
-                    prevMaxes.add(max);
                 }
             }
             max = 0;
