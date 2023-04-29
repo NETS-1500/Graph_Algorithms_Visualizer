@@ -25,11 +25,16 @@ public class GraphAlgorithms {
         GraphAlgorithms.adjacencyList = adjacencyList;
     }
 
+    static void reset() {
+        bfsOrdering = new ArrayList<>();
+        dfsOrdering = new ArrayList<>();
+        topologicalSort = new ArrayList<>();
+        startFinishTimes = new HashMap<>();
+    }
+
     static void BFS(Node startingNode) {
-        Queue<Node> queue = new ArrayDeque<>();
-        HashSet<Node> visited = new HashSet<>();
-        bfsOrdering.clear();
-        startFinishTimes.clear();
+        Queue<Node> queue = new LinkedList<>();
+        Set<Node> visited = new HashSet<>();
 
         queue.add(startingNode);
         visited.add(startingNode);
@@ -38,11 +43,25 @@ public class GraphAlgorithms {
             Node current = queue.poll();
             bfsOrdering.add(current);
 
-            for (Edge edge : adjacencyList.get(current)) {
-                Node neighbor = edge.getSucceedingNode();
-                if (!visited.contains(neighbor)) {
-                    queue.add(neighbor);
-                    visited.add(neighbor);
+            LinkedList<Edge> edges = adjacencyList.get(current);
+            if (edges != null) {
+                for (Edge edge : edges) {
+                    Node neighbor = edge.getSucceedingNode();
+                    if (!visited.contains(neighbor)) {
+                        queue.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+
+            // Check for unvisited nodes
+            if (queue.isEmpty()) {
+                for (Node node : adjacencyList.keySet()) {
+                    if (!visited.contains(node)) {
+                        queue.add(node);
+                        visited.add(node);
+                        break;
+                    }
                 }
             }
         }
@@ -52,10 +71,6 @@ public class GraphAlgorithms {
             System.out.print(node.getName() + " ");
         }
         System.out.println();
-    }
-
-    public static ArrayList<Node> getBfsOrdering() {
-        return GraphAlgorithms.bfsOrdering;
     }
 
     static HashMap<Node, Node> Dijkstra(Node source) {

@@ -142,8 +142,17 @@ public class GraphGUI extends JFrame {
             statusBarAdditional.setText("Node Removed: " + node + " | " + node.getName());
             statusBarAdditional.setForeground(Color.RED);
         }
-        else if (mode == GraphCanvas.Mode.ADD_EDGE || mode == GraphCanvas.Mode.REMOVE_EDGE) {
+        else if (mode == GraphCanvas.Mode.ADD_EDGE || mode == GraphCanvas.Mode.REMOVE_EDGE ||
+                mode == GraphCanvas.Mode.SHORTEST_PATH || mode == GraphCanvas.Mode.TOPOLOGICAL_SORT) {
             statusBarAdditional.setText("Node Selected: " + node + " | " + node.getName());
+            statusBarAdditional.setForeground(new Color(255, 96, 0));
+        }
+        else if (mode == GraphCanvas.Mode.BFS) {
+            statusBarAdditional.setText("BFS Start Node Selected: " + node + " | " + node.getName());
+            statusBarAdditional.setForeground(new Color(255, 96, 0));
+        }
+        else if (mode == GraphCanvas.Mode.DFS) {
+            statusBarAdditional.setText("DFS Start Node Selected: " + node + " | " + node.getName());
             statusBarAdditional.setForeground(new Color(255, 96, 0));
         }
     }
@@ -181,6 +190,12 @@ public class GraphGUI extends JFrame {
                 statusBarAdditional.setText("There were no edges to remove.");
             }
             statusBarAdditional.setForeground(Color.RED);
+        }
+    }
+
+    public static void updateStatusBarAlgorithms(GraphCanvas.Mode mode) {
+        if (mode == GraphCanvas.Mode.BFS) {
+
         }
     }
 

@@ -4,7 +4,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Optional;
 
 class GraphCanvas extends JPanel implements MouseListener {
     enum Mode {ADD_NODE, REMOVE_NODE, ADD_EDGE, REMOVE_EDGE, BFS, DFS, SHORTEST_PATH,
@@ -262,7 +261,30 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNodeBFS = node;
-                        System.out.println("BFS Start Node: " + startNodeBFS + " | " + startNodeBFS.getName());
+                        GraphGUI.updateStatusBarNode(mode, startNodeBFS);
+                        // System.out.println("BFS Start Node: " + startNodeBFS + " | " + startNodeBFS.getName());
+                        break;
+                    }
+                }
+            }
+
+            GraphAlgorithms.createAdjacencyList(nodes, edges);
+
+            GraphAlgorithms.reset();
+            GraphAlgorithms.BFS(startNodeBFS);
+
+            startNodeBFS = null;
+            mode = null;
+            GraphGUI.resetStatusBar();
+        }
+
+        else if(mode == Mode.DFS) {
+            if (startNodeDFS == null) {
+                for (Node node : nodes) {
+                    if (node.contains(e.getX(), e.getY())) {
+                        startNodeDFS = node;
+                        GraphGUI.updateStatusBarNode(mode, startNodeDFS);
+                        // System.out.println("DFS Start Node: " + startNodeDFS + " | " + startNodeDFS.getName());
                         break;
                     }
                 }
@@ -271,11 +293,16 @@ class GraphCanvas extends JPanel implements MouseListener {
             GraphAlgorithms.createAdjacencyList(nodes, edges);
             System.out.println(GraphAlgorithms.getAdjacencyList());
 
-            GraphAlgorithms.BFS(startNodeBFS);
+            GraphAlgorithms.reset();
+            GraphAlgorithms.DFS(startNodeDFS);
 
-            startNodeBFS = null;
+            ArrayList<Node> order = GraphAlgorithms.getDfsOrdering();
+            //figure out how to get pop-up
+
+            startNodeDFS = null;
             mode = null;
             GraphGUI.resetStatusBar();
+
         }
 
         else if (mode == Mode.SHORTEST_PATH) {
@@ -283,7 +310,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNodeShortPath = node;
-                        System.out.println("Shortest Path Start Node: " + startNodeShortPath + " | " + startNodeShortPath.getName());
+                        GraphGUI.updateStatusBarNode(mode, startNodeShortPath);
+                        //System.out.println("Shortest Path Start Node: " + startNodeShortPath + " | " + startNodeShortPath.getName());
                         break;
                     }
                 }
@@ -291,12 +319,15 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         endNodeShortPath = node;
-                        System.out.println("Shortest Path End Node: " + endNodeShortPath + " | " + endNodeShortPath.getName());
+                        GraphGUI.updateStatusBarNode(mode, endNodeShortPath);
+                        //System.out.println("Shortest Path End Node: " + endNodeShortPath + " | " + endNodeShortPath.getName());
                         break;
                     }
                 }
 
                 GraphAlgorithms.createAdjacencyList(nodes, edges);
+                GraphAlgorithms.reset();
+
                 LinkedList<Node> path = GraphAlgorithms.shortestPathTo(startNodeShortPath, endNodeShortPath);
                 if (path.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "There is no path from " +
@@ -325,37 +356,14 @@ class GraphCanvas extends JPanel implements MouseListener {
                 endNodeShortPath = null;
             }
         }
-        else if(mode == Mode.DFS) {
-            if (startNodeDFS == null) {
-                for (Node node : nodes) {
-                    if (node.contains(e.getX(), e.getY())) {
-                        startNodeDFS = node;
-                        System.out.println("DFS Start Node: " + startNodeDFS + " | " + startNodeDFS.getName());
-                        break;
-                    }
-                }
-            }
-
-            GraphAlgorithms.createAdjacencyList(nodes, edges);
-            System.out.println(GraphAlgorithms.getAdjacencyList());
-
-            GraphAlgorithms.DFS(startNodeDFS);
-
-            ArrayList order = GraphAlgorithms.getDfsOrdering();
-            //figure out how to get pop-up
-
-            startNodeDFS = null;
-            mode = null;
-            GraphGUI.resetStatusBar();
-
-        }
 
         else if(mode == Mode.TOPOLOGICAL_SORT) {
             if (startNodeTopoSort == null) {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNodeTopoSort = node;
-                        System.out.println("Topo Sort Start Node: " + startNodeTopoSort + " | " + startNodeTopoSort.getName());
+                        GraphGUI.updateStatusBarNode(mode, startNodeTopoSort);
+                        //System.out.println("Topo Sort Start Node: " + startNodeTopoSort + " | " + startNodeTopoSort.getName());
                         break;
                     }
                 }
@@ -364,6 +372,7 @@ class GraphCanvas extends JPanel implements MouseListener {
             GraphAlgorithms.createAdjacencyList(nodes, edges);
             System.out.println(GraphAlgorithms.getAdjacencyList());
 
+            GraphAlgorithms.reset();
             GraphAlgorithms.topoSort(startNodeTopoSort);
 
             startNodeTopoSort = null;
