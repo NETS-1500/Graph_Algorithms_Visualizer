@@ -4,14 +4,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 
 class GraphCanvas extends JPanel implements MouseListener {
     enum Mode {ADD_NODE, REMOVE_NODE, ADD_EDGE, REMOVE_EDGE, BFS, DFS, SHORTEST_PATH,
         TOPOLOGICAL_SORT}
 
     private Mode mode;
-    private ArrayList<Node> nodes;
-    private ArrayList<Edge> edges;
+    private final ArrayList<Node> nodes;
+    private final ArrayList<Edge> edges;
 
     private Node startNodeAddEdge = null;
     private Node endNodeAddEdge = null;
@@ -23,10 +24,10 @@ class GraphCanvas extends JPanel implements MouseListener {
 
     private Node startNodeDFS = null;
 
-    private Node startNodeTPS = null;
-
     private Node startNodeShortPath = null;
     private Node endNodeShortPath = null;
+
+    private Node startNodeTopoSort = null;
 
     public GraphCanvas() {
         setPreferredSize(new Dimension(400, 400));
@@ -49,14 +50,6 @@ class GraphCanvas extends JPanel implements MouseListener {
         }
     }
 
-    public ArrayList<Node> getNodes() {
-        return this.nodes;
-    }
-
-    public ArrayList<Edge> getEdges() {
-        return this.edges;
-    }
-
     public void mouseClicked(MouseEvent e) {
         if (mode == Mode.ADD_NODE) {
             boolean validInput = false;
@@ -73,7 +66,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                     if (!nodeExists) {
                         Node addedNode = new Node(nodeName, e.getX(), e.getY());
                         nodes.add(addedNode);
-                        System.out.println("Node Added: " + addedNode + " | " + addedNode.getName());
+                        GraphGUI.updateStatusBarNode(mode, addedNode);
+                        //System.out.println("Node Added: " + addedNode + " | " + addedNode.getName());
                         repaint();
                         validInput = true;
                         mode = null;
@@ -101,7 +95,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                 Node node = nodes.get(i);
                 if (node.contains(x, y)) {
                     Node removed = nodes.remove(i);
-                    System.out.println("Node Removed: " + removed + " | " + removed.getName());
+                    GraphGUI.updateStatusBarNode(mode, removed);
+                    //System.out.println("Node Removed: " + removed + " | " + removed.getName());
                     edges.removeIf
                             (edge -> edge.getPrecedingNode().equals(removed) || edge.getSucceedingNode().equals(removed));
                     repaint();
@@ -117,7 +112,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNodeAddEdge = node;
-                        System.out.println("Add Edge Start Node: " + startNodeAddEdge + " | " + startNodeAddEdge.getName());
+                        GraphGUI.updateStatusBarNode(mode, startNodeAddEdge);
+                        //System.out.println("Add Edge Start Node: " + startNodeAddEdge + " | " + startNodeAddEdge.getName());
                         break;
                     }
                 }
@@ -127,7 +123,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                     if (node.contains(e.getX(), e.getY())) {
                         endNodeAddEdge = node;
                         if (!endNodeAddEdge.equals(startNodeAddEdge)) {
-                            System.out.println("Add Edge End Node: " + endNodeAddEdge + " | " + endNodeAddEdge.getName());
+                            GraphGUI.updateStatusBarNode(mode, endNodeAddEdge);
+                            //System.out.println("Add Edge End Node: " + endNodeAddEdge + " | " + endNodeAddEdge.getName());
                         }
                         break;
                     }
@@ -153,7 +150,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                                 options,
                                 options[0]);
                         if (n == JOptionPane.YES_OPTION) {
-                            System.out.println("Directed");
+                            //System.out.println("Directed");
                             int input = -1;
                             while (input < 0) {
                                 String inputStr = JOptionPane.showInputDialog("Please enter a non-negative edge weight:");
@@ -170,7 +167,9 @@ class GraphCanvas extends JPanel implements MouseListener {
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                 }
                             }
-                            edges.add(new Edge(startNodeAddEdge, endNodeAddEdge, input, true));
+                            Edge addedEdge = new Edge(startNodeAddEdge, endNodeAddEdge, input, true);
+                            edges.add(addedEdge);
+                            GraphGUI.updateStatusBarEdge(mode, addedEdge);
 
                             repaint();
                             validInput = true;
@@ -180,7 +179,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                             GraphGUI.resetStatusBar();
 
                         } else if (n == JOptionPane.NO_OPTION) {
-                            System.out.println("Undirected");
+                            //System.out.println("Undirected");
                             int input = -1;
                             while (input < 0) {
                                 String inputStr = JOptionPane.showInputDialog("Please enter a non-negative edge weight:");
@@ -197,7 +196,9 @@ class GraphCanvas extends JPanel implements MouseListener {
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                 }
                             }
-                            edges.add(new Edge(startNodeAddEdge, endNodeAddEdge, input, false));
+                            Edge addedEdge = new Edge(startNodeAddEdge, endNodeAddEdge, input, false);
+                            edges.add(addedEdge);
+                            GraphGUI.updateStatusBarEdge(mode, addedEdge);
 
                             repaint();
                             validInput = true;
@@ -217,7 +218,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNodeRemoveEdge = node;
-                        System.out.println("Remove Edge Start: " + startNodeRemoveEdge + " | " + startNodeRemoveEdge.getName());
+                        GraphGUI.updateStatusBarNode(mode, startNodeRemoveEdge);
+                        //System.out.println("Remove Edge Start: " + startNodeRemoveEdge + " | " + startNodeRemoveEdge.getName());
                         break;
                     }
                 }
@@ -225,23 +227,26 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         endNodeRemoveEdge = node;
-                        System.out.println("Remove Edge End: " + endNodeRemoveEdge + " | " + endNodeRemoveEdge.getName());
+                        GraphGUI.updateStatusBarNode(mode, endNodeRemoveEdge);
+                        //System.out.println("Remove Edge End: " + endNodeRemoveEdge + " | " + endNodeRemoveEdge.getName());
                         break;
                     }
                 }
 
-                boolean edgeRemoved = edges.removeIf
-                        (edge -> (edge.getPrecedingNode().equals(startNodeRemoveEdge) &&
-                                edge.getSucceedingNode().equals(endNodeRemoveEdge)) ||
-                                (edge.getPrecedingNode().equals(endNodeRemoveEdge) &&
-                                        edge.getSucceedingNode().equals(startNodeRemoveEdge) &&
-                                        !edge.getIsDirected()));
-                if (edgeRemoved) {
-                    System.out.println("Edge Removed");
-                }
-                else {
-                    System.out.println("No edge removed");
-                }
+                ArrayList<Edge> removedEdges = new ArrayList<>();
+                edges.removeIf(edge -> {
+                    if ((edge.getPrecedingNode().equals(startNodeRemoveEdge) &&
+                            edge.getSucceedingNode().equals(endNodeRemoveEdge)) ||
+                            (edge.getPrecedingNode().equals(endNodeRemoveEdge) &&
+                                    edge.getSucceedingNode().equals(startNodeRemoveEdge) &&
+                                    !edge.getIsDirected())) {
+                        removedEdges.add(edge);
+                        return true;
+                    }
+                    return false;
+                });
+
+                GraphGUI.updateStatusBarEdge(mode, removedEdges);
 
                 repaint();
                 startNodeRemoveEdge = null;
@@ -267,6 +272,10 @@ class GraphCanvas extends JPanel implements MouseListener {
             System.out.println(GraphAlgorithms.getAdjacencyList());
 
             GraphAlgorithms.BFS(startNodeBFS);
+
+            startNodeBFS = null;
+            mode = null;
+            GraphGUI.resetStatusBar();
         }
 
         else if (mode == Mode.SHORTEST_PATH) {
@@ -321,7 +330,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
                         startNodeDFS = node;
-                        System.out.println("BFS Start Node: " + startNodeDFS + " | " + startNodeDFS.getName());
+                        System.out.println("DFS Start Node: " + startNodeDFS + " | " + startNodeDFS.getName());
                         break;
                     }
                 }
@@ -335,14 +344,18 @@ class GraphCanvas extends JPanel implements MouseListener {
             ArrayList order = GraphAlgorithms.getDfsOrdering();
             //figure out how to get pop-up
 
+            startNodeDFS = null;
+            mode = null;
+            GraphGUI.resetStatusBar();
+
         }
 
         else if(mode == Mode.TOPOLOGICAL_SORT) {
-            if (startNodeTPS == null) {
+            if (startNodeTopoSort == null) {
                 for (Node node : nodes) {
                     if (node.contains(e.getX(), e.getY())) {
-                        startNodeTPS = node;
-                        System.out.println("BFS Start Node: " + startNodeTPS + " | " + startNodeTPS.getName());
+                        startNodeTopoSort = node;
+                        System.out.println("Topo Sort Start Node: " + startNodeTopoSort + " | " + startNodeTopoSort.getName());
                         break;
                     }
                 }
@@ -351,7 +364,11 @@ class GraphCanvas extends JPanel implements MouseListener {
             GraphAlgorithms.createAdjacencyList(nodes, edges);
             System.out.println(GraphAlgorithms.getAdjacencyList());
 
-            GraphAlgorithms.topoSort(startNodeTPS);
+            GraphAlgorithms.topoSort(startNodeTopoSort);
+
+            startNodeTopoSort = null;
+            mode = null;
+            GraphGUI.resetStatusBar();
         }
     }
 

@@ -1,19 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class GraphGUI extends JFrame {
-    private GraphCanvas canvas;
-    private JButton addNodeButton;
-    private JButton removeNodeButton;
-    private JButton addEdgeButton;
-    private JButton removeEdgeButton;
-    private JButton BFS;
-    private JButton DFS;
-    private JButton shortestPath;
-    private JButton topologicalSort;
-    private JButton reset;
+    private final GraphCanvas canvas;
     private static JLabel statusBar;
+    private static JLabel statusBarAdditional;
 
     public GraphGUI() {
         super("Graph GUI");
@@ -29,7 +22,7 @@ public class GraphGUI extends JFrame {
         JPanel algorithmButtonPanel = new JPanel();
         algorithmButtonPanel.setLayout(new GridLayout(1, 4));
 
-        addNodeButton = new JButton("Add Node");
+        JButton addNodeButton = new JButton("Add Node");
         addNodeButton.addActionListener(e -> {
             statusBar.setText("Click on the Canvas to ADD a node.");
             statusBar.setForeground(Color.BLUE);
@@ -37,7 +30,7 @@ public class GraphGUI extends JFrame {
         });
         buttonPanel.add(addNodeButton);
 
-        removeNodeButton = new JButton("Remove Node");
+        JButton removeNodeButton = new JButton("Remove Node");
         removeNodeButton.addActionListener(e -> {
             canvas.setMode(GraphCanvas.Mode.REMOVE_NODE);
             statusBar.setText("Click on a node to DELETE it.");
@@ -45,7 +38,7 @@ public class GraphGUI extends JFrame {
         });
         buttonPanel.add(removeNodeButton);
 
-        addEdgeButton = new JButton("Add Edge");
+        JButton addEdgeButton = new JButton("Add Edge");
         addEdgeButton.addActionListener(e -> {
             canvas.setMode(GraphCanvas.Mode.ADD_EDGE);
             statusBar.setText("Click on two nodes to add an edge between them. Order matters for directed edges.");
@@ -53,7 +46,7 @@ public class GraphGUI extends JFrame {
         });
         buttonPanel.add(addEdgeButton);
 
-        removeEdgeButton = new JButton("Remove Edge");
+        JButton removeEdgeButton = new JButton("Remove Edge");
         removeEdgeButton.addActionListener(e -> {
             canvas.setMode(GraphCanvas.Mode.REMOVE_EDGE);
             statusBar.setText("Click on two nodes to remove the edge between them. Order matters for directed edges.");
@@ -61,7 +54,7 @@ public class GraphGUI extends JFrame {
         });
         buttonPanel.add(removeEdgeButton);
 
-        BFS = new JButton("BFS");
+        JButton BFS = new JButton("BFS");
         BFS.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,7 +65,7 @@ public class GraphGUI extends JFrame {
         });
         algorithmButtonPanel.add(BFS);
 
-        DFS = new JButton("DFS");
+        JButton DFS = new JButton("DFS");
         DFS.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +76,7 @@ public class GraphGUI extends JFrame {
         });
         algorithmButtonPanel.add(DFS);
 
-        shortestPath = new JButton("Shortest Path");
+        JButton shortestPath = new JButton("Shortest Path");
         shortestPath.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,7 +88,7 @@ public class GraphGUI extends JFrame {
         });
         algorithmButtonPanel.add(shortestPath);
 
-        topologicalSort = new JButton("Topological Sort");
+        JButton topologicalSort = new JButton("Topological Sort");
         topologicalSort.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,12 +106,23 @@ public class GraphGUI extends JFrame {
         southPanel.add(algorithmButtonPanel);
         add(southPanel, BorderLayout.SOUTH);
 
+        JPanel statusBarPanel = new JPanel();
+        statusBarPanel.setLayout(new BoxLayout(statusBarPanel, BoxLayout.Y_AXIS));
+        statusBarPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         statusBar = new JLabel(" ");
-        statusBar.setHorizontalAlignment(SwingConstants.CENTER);
         Font font = statusBar.getFont();
         statusBar.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
         statusBar.setText("Click on a button at the bottom.");
-        add(statusBar, BorderLayout.NORTH);
+        statusBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        statusBarPanel.add(statusBar);
+
+        statusBarAdditional = new JLabel(" ");
+        statusBarAdditional.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
+        statusBarAdditional.setAlignmentX(Component.CENTER_ALIGNMENT);
+        statusBarPanel.add(statusBarAdditional);
+
+        add(statusBarPanel, BorderLayout.NORTH);
 
         pack();
         setVisible(true);
@@ -127,6 +131,57 @@ public class GraphGUI extends JFrame {
     public static void resetStatusBar() {
         statusBar.setText("Click on a button at the bottom.");
         statusBar.setForeground(Color.BLACK);
+    }
+
+    public static void updateStatusBarNode(GraphCanvas.Mode mode, Node node) {
+        if (mode == GraphCanvas.Mode.ADD_NODE) {
+            statusBarAdditional.setText("Node Added: " + node + " | " + node.getName());
+            statusBarAdditional.setForeground(new Color(0, 128, 0));
+        }
+        else if (mode == GraphCanvas.Mode.REMOVE_NODE) {
+            statusBarAdditional.setText("Node Removed: " + node + " | " + node.getName());
+            statusBarAdditional.setForeground(Color.RED);
+        }
+        else if (mode == GraphCanvas.Mode.ADD_EDGE || mode == GraphCanvas.Mode.REMOVE_EDGE) {
+            statusBarAdditional.setText("Node Selected: " + node + " | " + node.getName());
+            statusBarAdditional.setForeground(new Color(255, 96, 0));
+        }
+    }
+
+    public static void updateStatusBarEdge(GraphCanvas.Mode mode, Edge edge) {
+        if (mode == GraphCanvas.Mode.ADD_EDGE) {
+            if (edge.getIsDirected()) {
+                statusBarAdditional.setText("Edge Added: " + edge.getPrecedingNode().getName() + " -> " +
+                        edge.getSucceedingNode().getName() + " (" + edge.getWeight() + ")");
+            }
+            else {
+                statusBarAdditional.setText("Edge Added: " + edge.getPrecedingNode().getName() + " <-> " +
+                        edge.getSucceedingNode().getName() + " (" + edge.getWeight() + ")");
+            }
+            statusBarAdditional.setForeground(new Color(0, 128, 0));
+        }
+    }
+
+    public static void updateStatusBarEdge(GraphCanvas.Mode mode, ArrayList<Edge> edges) {
+        if (mode == GraphCanvas.Mode.REMOVE_EDGE) {
+            if (edges.size() == 1) {
+                if (edges.get(0).getIsDirected()) {
+                    statusBarAdditional.setText("Edge Removed: " + edges.get(0).getPrecedingNode().getName() + " -> " +
+                            edges.get(0).getSucceedingNode().getName() + " (" + edges.get(0).getWeight() + ")");
+                }
+                else {
+                    statusBarAdditional.setText("Edge Removed: " + edges.get(0).getPrecedingNode().getName() + " <-> " +
+                            edges.get(0).getSucceedingNode().getName() + " (" + edges.get(0).getWeight() + ")");
+                }
+            }
+            else if (edges.size() > 1) {
+                statusBarAdditional.setText("All edges incident to the selected edges were removed.");
+            }
+            else {
+                statusBarAdditional.setText("There were no edges to remove.");
+            }
+            statusBarAdditional.setForeground(Color.RED);
+        }
     }
 
     public static void main(String[] args) {
