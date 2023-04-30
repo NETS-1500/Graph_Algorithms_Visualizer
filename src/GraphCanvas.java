@@ -272,6 +272,19 @@ class GraphCanvas extends JPanel implements MouseListener {
 
             GraphAlgorithms.reset();
             GraphAlgorithms.BFS(startNodeBFS);
+            ArrayList<Node> bfs = GraphAlgorithms.getBfsOrdering();
+
+            String bfsString = "";
+            for (int i = 0; i < bfs.size(); i++) {
+                bfsString += bfs.get(i).getName();
+                if (i != bfs.size() - 1) {
+                    bfsString += " -> ";
+                }
+            }
+
+            JOptionPane.showMessageDialog(this, bfsString, "BFS order of discovery:",
+                    JOptionPane.INFORMATION_MESSAGE);
+
 
             startNodeBFS = null;
             mode = null;
@@ -296,8 +309,17 @@ class GraphCanvas extends JPanel implements MouseListener {
             GraphAlgorithms.reset();
             GraphAlgorithms.DFS(startNodeDFS);
 
-            ArrayList<Node> order = GraphAlgorithms.getDfsOrdering();
-            //figure out how to get pop-up
+            ArrayList<Node> dfs = GraphAlgorithms.getDfsOrdering();
+            String dfsString = "";
+            for (int i = 0; i < dfs.size(); i++) {
+                dfsString += dfs.get(i).getName();
+                if (i != dfs.size() - 1) {
+                    dfsString += " -> ";
+                }
+            }
+
+            JOptionPane.showMessageDialog(this, dfsString, "DFS order of discovery:",
+                    JOptionPane.INFORMATION_MESSAGE);
 
             startNodeDFS = null;
             mode = null;
@@ -374,6 +396,25 @@ class GraphCanvas extends JPanel implements MouseListener {
 
             GraphAlgorithms.reset();
             GraphAlgorithms.topoSort(startNodeTopoSort);
+
+            if (!GraphAlgorithms.isDAG()) {
+                JOptionPane.showMessageDialog(this, "This graph is not a DAG! " +
+                        "Please remove any cycles and try again :)", "Invalid graph!", JOptionPane.ERROR_MESSAGE);
+            } else {
+                ArrayList<Node> toposort = GraphAlgorithms.getTopoSort();
+                String toposortString = "";
+                for (int i = 0; i < toposort.size(); i++) {
+                    toposortString += toposort.get(i).getName();
+                    if (i != toposort.size() - 1) {
+                        toposortString += " -> ";
+                    }
+                }
+
+                JOptionPane.showMessageDialog(this, toposortString, "Topological sorting from " +
+                                startNodeTopoSort.getName() + ":",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
 
             startNodeTopoSort = null;
             mode = null;

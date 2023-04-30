@@ -76,6 +76,9 @@ public class GraphAlgorithms {
         System.out.println();
     }
 
+    static ArrayList<Node> getBfsOrdering() {
+        return bfsOrdering;
+    }
     static HashMap<Node, Node> Dijkstra(Node source) {
         HashMap<Node, Integer> distances = new HashMap<>();
         HashMap<Node, Node> parents = new HashMap<>();
@@ -299,5 +302,13 @@ public class GraphAlgorithms {
         else {
             System.out.println("This graph is a not a DAG. No TopoSort possible");
         }
+    }
+
+     static ArrayList<Node> getTopoSort() {
+        return topologicalSort;
+    }
+
+    static boolean isDAG() {
+        return isDAG;
     }
 }
