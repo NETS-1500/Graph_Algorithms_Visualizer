@@ -32,6 +32,7 @@ public class GraphAlgorithms {
         dfsOrdering = new ArrayList<>();
         topologicalSort = new ArrayList<>();
         startFinishTimes = new HashMap<>();
+        isDAG = true;
     }
 
     static void BFS(Node startingNode) {
