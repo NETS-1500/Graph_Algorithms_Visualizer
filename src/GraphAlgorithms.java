@@ -8,6 +8,8 @@ public class GraphAlgorithms {
     private static ArrayList<Node> topologicalSort = new ArrayList<>();
     private static HashMap<Node,int[]> startFinishTimes = new HashMap<>();
 
+    private static boolean isDAG = true;
+
     static void createAdjacencyList(ArrayList<Node> nodes, ArrayList<Edge> edges) {
         HashMap<Node, LinkedList<Edge>> adjacencyList = new HashMap<>();
         for (Node node : nodes) {
@@ -184,11 +186,18 @@ public class GraphAlgorithms {
                     stack.add(neighbor);
                     visited.add(neighbor);
                 }
+                // if we were able to reach a neighbor that we already allocated a start time to or if there
+                // exists an undirected edge, then it is not
+                //a DAG. Do check if this logic holds.
+
+                if(!edge.getIsDirected()) {
+                    isDAG = false;
+                }
             }
             //if there are no neigbors that we haven't already visited for this node,
             // allocate finish time
             //assumption: the start time has already been given
-            if(visitedAllNeighbors == true) {
+            if(visitedAllNeighbors) {
                 int[] end = startFinishTimes.get(current);
                 end[1] = time++;
                 startFinishTimes.put(current,end);
@@ -202,6 +211,7 @@ public class GraphAlgorithms {
                     //if there has not been an end time assigned, the second value should be 0
                     //this is insurance that we do not overwrite any previous assignments
                     boolean neighborsNotInStack = true;
+                    boolean haveFinishTimes = true;
                     if(times[1] == 0) {
                         for (Edge edge : adjacencyList.get(dfsOrdering.get(i))) {
                             Node neighbor = edge.getSucceedingNode();
@@ -210,11 +220,25 @@ public class GraphAlgorithms {
                             if (stack.contains(neighbor)) {
                                 neighborsNotInStack = false;
                             }
+                            if(startFinishTimes.containsKey(neighbor)) {
+                                if(startFinishTimes.get(neighbor)[1] == 0) {
+                                    haveFinishTimes = false;
+                                }
+                            }
                         }
-                        if(neighborsNotInStack) {
+                        if(neighborsNotInStack && haveFinishTimes) {
                             int[] prevEnd = startFinishTimes.get(dfsOrdering.get(i));
                             prevEnd[1] = time++;
                         }
+                    }
+                }
+            }
+            if (stack.isEmpty()) {
+                for (Node node : adjacencyList.keySet()) {
+                    if (!visited.contains(node)) {
+                        stack.add(node);
+                        visited.add(node);
+                        break;
                     }
                 }
             }
@@ -232,28 +256,47 @@ public class GraphAlgorithms {
         return dfsOrdering;
     }
 
-    public static void topoSort(Node sourceNode) {
-        System.out.println("topo called");
-        DFS(sourceNode);
-        int max = 0;
-        ArrayList prevMaxes = new ArrayList<>();
-        while(topologicalSort.size() != startFinishTimes.size()) {
-            for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
-                if (entry.getValue()[1] > max && !prevMaxes.contains(entry.getValue()[1])) {
-                    max = entry.getValue()[1];
-                }
-            }
-            prevMaxes.add(max);
-            for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
-                if (entry.getValue()[1] == max && !topologicalSort.contains(entry.getKey())) {
-                    topologicalSort.add(entry.getKey());
-                }
-            }
-            max = 0;
+    public static void checkDag(Node source, ArrayList<Node> visited, Stack<Node> recursion) {
+        if(recursion.contains(source)) {
+            isDAG = false;
+            return;
         }
-        System.out.println("Topological order: ");
-        for (Node n: topologicalSort) {
-            System.out.print(n.getName() + " ");
+        visited.add(source);
+        recursion.add(source);
+        for (Edge edge : adjacencyList.get(source)) {
+            Node neighbor = edge.getSucceedingNode();
+            checkDag(neighbor,visited,recursion);
+        }
+        recursion.pop();
+    }
+
+    public static void topoSort(Node sourceNode) {
+        checkDag(sourceNode, new ArrayList<>(), new Stack<>());
+        if(isDAG) {
+            DFS(sourceNode);
+            int max = 0;
+            ArrayList prevMaxes = new ArrayList<>();
+            while (topologicalSort.size() != startFinishTimes.size()) {
+                for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
+                    if (entry.getValue()[1] > max && !prevMaxes.contains(entry.getValue()[1])) {
+                        max = entry.getValue()[1];
+                    }
+                }
+                prevMaxes.add(max);
+                for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
+                    if (entry.getValue()[1] == max && !topologicalSort.contains(entry.getKey())) {
+                        topologicalSort.add(entry.getKey());
+                    }
+                }
+                max = 0;
+            }
+            System.out.println("Topological order: ");
+            for (Node n : topologicalSort) {
+                System.out.print(n.getName() + " ");
+            }
+        }
+        else {
+            System.out.println("This graph is a not a DAG. No TopoSort possible");
         }
     }
 }
