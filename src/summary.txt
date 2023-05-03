@@ -17,9 +17,10 @@ Alyssa Antonian:
 -wrote summary.
 
 Tiffany Lian:
--
--
--
+-implemented DFS algorithm with start/finish times
+-implemented topological sort
+-wrote function to check for DAGs
+-tested/debugged other algorithms/functionality
 
 -=+=- Overview -=+=-
 Categories: Graph/graph algorithms and social networks
