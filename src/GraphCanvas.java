@@ -312,9 +312,12 @@ class GraphCanvas extends JPanel implements MouseListener {
             ArrayList<Node> dfs = GraphAlgorithms.getDfsOrdering();
             String dfsString = "";
             for (int i = 0; i < dfs.size(); i++) {
-                dfsString += dfs.get(i).getName();
+                Node n = dfs.get(i);
+                dfsString += n.getName() + ": d/f time = " + GraphAlgorithms.getStartFinTimes().get(n)[0] +
+                        "/" + GraphAlgorithms.getStartFinTimes().get(n)[1];
+
                 if (i != dfs.size() - 1) {
-                    dfsString += " -> ";
+                    dfsString += "\n";
                 }
             }
 

@@ -260,6 +260,10 @@ public class GraphAlgorithms {
         return dfsOrdering;
     }
 
+    public static HashMap<Node, int[]> getStartFinTimes() {
+        return startFinishTimes;
+    }
+
     public static void checkDag(Node source, ArrayList<Node> visited, Stack<Node> recursion) {
         if(recursion.contains(source)) {
             isDAG = false;
