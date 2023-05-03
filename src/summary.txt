@@ -1,0 +1,33 @@
+-=+=- Project -=+=-
+Edge Explorer Graph Visualizer
+
+-=+=- Team -=+=-
+Michael Sun:
+-
+-
+-
+
+Alyssa Antonian:
+-implemented shortest path algorithm
+-implemented GUI popups to show results of algorithms and/or user input errors
+-tested/debugged the GUI and other algorithms
+-contributed to add-edge functionality
+-wrote summary
+
+Tiffany Lian:
+-
+-
+-
+
+-=+=- Overview -=+=-
+Categories: Graph/graph algorithms and social networks
+Edge Explorer is an interactive graph visualizer built to help students
+understand common graph algorithms! After building a unique graph with
+your desired nodes, connectivity, weights, and direction, you can run algorithms
+like DFS and Dijkstra's to see how they work depending on the input graph
+as well as your chosen source. The GUI will even indicate requirements needed to
+run certain algorithms, like needing a DAG to topologically sort or non-negative edge
+weights to find a shortest path. Additionally, Edge Explorer can be used to help
+model social networks, given each node can be labeled as a different person
+and edges can be used to model friendships. This way, connectivity between social
+circles and degrees of friendship separation can be easily seen!
