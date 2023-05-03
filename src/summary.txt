@@ -21,6 +21,7 @@ Tiffany Lian:
 -implemented topological sort
 -wrote function to check for DAGs
 -tested/debugged other algorithms/functionality
+-code cleanup
 
 -=+=- Overview -=+=-
 Categories: Graph/graph algorithms and social networks

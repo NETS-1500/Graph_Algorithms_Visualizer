@@ -68,12 +68,6 @@ public class GraphAlgorithms {
                 }
             }
         }
-
-        System.out.println("BFS Order: ");
-        for (Node node : bfsOrdering) {
-            System.out.print(node.getName() + " ");
-        }
-        System.out.println();
     }
 
     static ArrayList<Node> getBfsOrdering() {
@@ -153,7 +147,6 @@ public class GraphAlgorithms {
         return adjacencyList;
     }
     public static void DFS(Node startingNode) {
-        System.out.println("DFS called");
         //initializing stack to implement DFS
         Stack<Node> stack = new Stack<>();
 
@@ -171,8 +164,6 @@ public class GraphAlgorithms {
 
         while (!stack.isEmpty()) {
             Node current = stack.pop();
-
-            System.out.println("nodes in ordering");
             dfsOrdering.add(current);
 
             //when we see the node for the first time, allocate start time
@@ -194,7 +185,6 @@ public class GraphAlgorithms {
                 // if we were able to reach a neighbor that we already allocated a start time to or if there
                 // exists an undirected edge, then it is not
                 //a DAG. Do check if this logic holds.
-
                 if(!edge.getIsDirected()) {
                     isDAG = false;
                 }
@@ -206,18 +196,15 @@ public class GraphAlgorithms {
             }
             //don't forget to clear before next iteration
             neighborsToAdd.clear();
+
             //if there are no neigbors that we haven't already visited for this node,
             // allocate finish time
-            //assumption: the start time has already been given
             if(visitedAllNeighbors) {
                 int[] end = startFinishTimes.get(current);
                 end[1] = time++;
                 startFinishTimes.put(current,end);
                 //now we need to go back to the nodes that we have already assigned start times to
                 //and see if we need to give them a finish time
-
-                //i need an edge case where even if a previous node has already visited this node and added it to the stack
-                //if my current node neighbors it, it needs to have the next start time
                 for (int i = dfsOrdering.size() - 1; i >= 0; i--) {
                     int[] times = startFinishTimes.get(dfsOrdering.get(i));
                     //if there has not been an end time assigned, the second value should be 0
@@ -255,13 +242,6 @@ public class GraphAlgorithms {
                 }
             }
         }
-
-        System.out.println("DFS Order: ");
-        for (Node node : dfsOrdering) {
-            System.out.print(node.getName() + " ( Start/Finish: " + startFinishTimes.get(node)[0] + "/"
-                    + startFinishTimes.get(node)[1] + ") ");
-        }
-        System.out.println();
     }
 
     public static ArrayList<Node> getDfsOrdering() {
@@ -306,13 +286,9 @@ public class GraphAlgorithms {
                 }
                 max = 0;
             }
-            System.out.println("Topological order: ");
-            for (Node n : topologicalSort) {
-                System.out.print(n.getName() + " ");
-            }
         }
         else {
-            System.out.println("This graph is a not a DAG. No TopoSort possible");
+            //This graph is a not a DAG. No TopoSort possible
         }
     }
 
