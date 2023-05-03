@@ -182,12 +182,13 @@ public class GraphAlgorithms {
 
             //boolean to check whether all neighbors have been visited
             boolean visitedAllNeighbors = true;
+            ArrayList<Node> neighborsToAdd = new ArrayList<>();
             for (Edge edge : adjacencyList.get(current)) {
                 Node neighbor = edge.getSucceedingNode();
                 if (!visited.contains(neighbor)) {
                     visitedAllNeighbors = false;
-                    System.out.println("added to stack");
-                    stack.add(neighbor);
+                    //instead of adding to stack immediately, add to temporary holder
+                    neighborsToAdd.add(neighbor);
                     visited.add(neighbor);
                 }
                 // if we were able to reach a neighbor that we already allocated a start time to or if there
@@ -198,6 +199,13 @@ public class GraphAlgorithms {
                     isDAG = false;
                 }
             }
+            //sort in alphabetical order, then add backwards due to nature of stack
+            Collections.sort(neighborsToAdd);
+            for(int i = neighborsToAdd.size() - 1; i >= 0; i--) {
+                stack.add(neighborsToAdd.get(i));
+            }
+            //don't forget to clear before next iteration
+            neighborsToAdd.clear();
             //if there are no neigbors that we haven't already visited for this node,
             // allocate finish time
             //assumption: the start time has already been given

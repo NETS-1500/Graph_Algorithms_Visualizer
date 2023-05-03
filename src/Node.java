@@ -1,6 +1,6 @@
 import java.awt.*;
 
-class Node {
+class Node implements Comparable{
     private static final int RADIUS = 15;
 
     private final String name;
@@ -66,5 +66,10 @@ class Node {
         }
 
         return true;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return (this.getName().compareTo(((Node) o).getName()));
     }
 }
