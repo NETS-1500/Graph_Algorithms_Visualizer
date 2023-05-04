@@ -4,6 +4,8 @@ public class GraphAlgorithms {
 
     private static ArrayList<Node> bfsOrdering = new ArrayList<>();
     private static HashMap<Node, LinkedList<Edge>> adjacencyList;
+    private static int pathWeight;
+    private static HashMap<Node, Integer> distances;
     private static ArrayList<Node> dfsOrdering = new ArrayList<>();
     private static ArrayList<Node> topologicalSort = new ArrayList<>();
     private static HashMap<Node,int[]> startFinishTimes = new HashMap<>();
@@ -180,7 +182,7 @@ public class GraphAlgorithms {
     }
 
     static HashMap<Node, Node> Dijkstra(Node source) {
-        HashMap<Node, Integer> distances = new HashMap<>();
+        distances = new HashMap<>();
         HashMap<Node, Node> parents = new HashMap<>();
         Queue<Node> minQ = new PriorityQueue<>((o1, o2) -> {
             int dist1 = distances.get(o1);
@@ -227,6 +229,8 @@ public class GraphAlgorithms {
     }
 
     static LinkedList<Node> shortestPath(Node source, Node target) {
+        pathWeight = 0;
+
         LinkedList<Node> path = new LinkedList<>();
         if (source.equals(target)) {
             path.add(source);
@@ -239,6 +243,7 @@ public class GraphAlgorithms {
         while (curr != null) {
             path.add(0, curr);
             if (curr.equals(source)) {
+                pathWeight = distances.get(target);
                 return path;
             } else {
                 curr = parents.get(curr);
@@ -247,6 +252,10 @@ public class GraphAlgorithms {
 
         path.clear();
         return path;
+    }
+
+    static int getPathWeight() {
+        return pathWeight;
     }
 
     static void checkIfDAG(Node source, ArrayList<Node> visited, Stack<Node> recursion) {
