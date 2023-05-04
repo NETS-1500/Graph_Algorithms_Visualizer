@@ -358,6 +358,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                                     startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
+
                 GraphGUI.resetStatusBar();
                 startNodeShortPath = null;
                 endNodeShortPath = null;

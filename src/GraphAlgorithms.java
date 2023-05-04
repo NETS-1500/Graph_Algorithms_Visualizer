@@ -7,7 +7,6 @@ public class GraphAlgorithms {
     private static ArrayList<Node> dfsOrdering = new ArrayList<>();
     private static ArrayList<Node> topologicalSort = new ArrayList<>();
     private static HashMap<Node,int[]> startFinishTimes = new HashMap<>();
-
     private static boolean isDAG = true;
 
     static void createAdjacencyList(ArrayList<Node> nodes, ArrayList<Edge> edges) {
