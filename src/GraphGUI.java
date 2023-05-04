@@ -193,12 +193,6 @@ public class GraphGUI extends JFrame {
         }
     }
 
-    public static void updateStatusBarAlgorithms(GraphCanvas.Mode mode) {
-        if (mode == GraphCanvas.Mode.BFS) {
-
-        }
-    }
-
     public static void main(String[] args) {
         new GraphGUI();
     }

@@ -27,7 +27,7 @@ public class GraphAlgorithms {
         GraphAlgorithms.adjacencyList = adjacencyList;
     }
 
-    static void reset() {
+    static void resetAlgorithmVariables() {
         bfsOrdering = new ArrayList<>();
         dfsOrdering = new ArrayList<>();
         topologicalSort = new ArrayList<>();
@@ -70,83 +70,11 @@ public class GraphAlgorithms {
         }
     }
 
-    static ArrayList<Node> getBfsOrdering() {
+    public static ArrayList<Node> getBFSOrdering() {
         return bfsOrdering;
     }
-    static HashMap<Node, Node> Dijkstra(Node source) {
-        HashMap<Node, Integer> distances = new HashMap<>();
-        HashMap<Node, Node> parents = new HashMap<>();
-        Queue<Node> minQ = new PriorityQueue<>((o1, o2) -> {
-            int dist1 = distances.get(o1);
-            int dist2 = distances.get(o2);
 
-            if (dist1 < dist2) {
-                return -1;
-            } else if (dist1 > dist2) {
-                return 1;
-            } else {
-                return 0;
-            }
-        });
-
-        Set<Node> nodes = adjacencyList.keySet();
-        for (Node node : nodes) {
-            distances.put(node, Integer.MAX_VALUE);
-            parents.put(node, null);
-            minQ.add(node);
-        }
-
-        minQ.remove(source);
-        distances.replace(source, 0);
-        minQ.add(source);
-
-        while (!minQ.isEmpty()) {
-            Node u = minQ.poll();
-
-            LinkedList<Edge> neighbors = adjacencyList.get(u);
-            for (Edge edge : neighbors) {
-                Node v = edge.getSucceedingNode();
-                int distU = distances.get(u);
-                int distV = distances.get(v);
-
-                if (minQ.contains(v) && distV > distU + edge.getWeight()) {
-                    minQ.remove(v);
-                    distances.replace(v, distU + edge.getWeight());
-                    minQ.add(v);
-                    parents.put(v, u);
-                }
-            }
-        }
-        return parents;
-    }
-
-    public static LinkedList<Node> shortestPathTo(Node source, Node target) {
-        LinkedList<Node> path = new LinkedList<>();
-        if (source.equals(target)) {
-            path.add(source);
-            return path;
-        }
-
-        HashMap<Node, Node> parents = Dijkstra(source);
-
-        Node curr = target;
-        while (curr != null) {
-            path.add(0, curr);
-            if (curr.equals(source)) {
-                return path;
-            } else {
-                curr = parents.get(curr);
-            }
-        }
-
-        path.clear();
-        return path;
-    }
-
-    public static HashMap<Node, LinkedList<Edge>> getAdjacencyList() {
-        return adjacencyList;
-    }
-    public static void DFS(Node startingNode) {
+    static void DFS(Node startingNode) {
         //initializing stack to implement DFS
         Stack<Node> stack = new Stack<>();
 
@@ -244,15 +172,85 @@ public class GraphAlgorithms {
         }
     }
 
-    public static ArrayList<Node> getDfsOrdering() {
+    public static ArrayList<Node> getDFSOrdering() {
         return dfsOrdering;
     }
 
-    public static HashMap<Node, int[]> getStartFinTimes() {
+    public static HashMap<Node, int[]> getStartFinishTimes() {
         return startFinishTimes;
     }
 
-    public static void checkDag(Node source, ArrayList<Node> visited, Stack<Node> recursion) {
+    static HashMap<Node, Node> Dijkstra(Node source) {
+        HashMap<Node, Integer> distances = new HashMap<>();
+        HashMap<Node, Node> parents = new HashMap<>();
+        Queue<Node> minQ = new PriorityQueue<>((o1, o2) -> {
+            int dist1 = distances.get(o1);
+            int dist2 = distances.get(o2);
+
+            if (dist1 < dist2) {
+                return -1;
+            } else if (dist1 > dist2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        Set<Node> nodes = adjacencyList.keySet();
+        for (Node node : nodes) {
+            distances.put(node, Integer.MAX_VALUE);
+            parents.put(node, null);
+            minQ.add(node);
+        }
+
+        minQ.remove(source);
+        distances.replace(source, 0);
+        minQ.add(source);
+
+        while (!minQ.isEmpty()) {
+            Node u = minQ.poll();
+
+            LinkedList<Edge> neighbors = adjacencyList.get(u);
+            for (Edge edge : neighbors) {
+                Node v = edge.getSucceedingNode();
+                int distU = distances.get(u);
+                int distV = distances.get(v);
+
+                if (minQ.contains(v) && distV > distU + edge.getWeight()) {
+                    minQ.remove(v);
+                    distances.replace(v, distU + edge.getWeight());
+                    minQ.add(v);
+                    parents.put(v, u);
+                }
+            }
+        }
+        return parents;
+    }
+
+    static LinkedList<Node> shortestPath(Node source, Node target) {
+        LinkedList<Node> path = new LinkedList<>();
+        if (source.equals(target)) {
+            path.add(source);
+            return path;
+        }
+
+        HashMap<Node, Node> parents = Dijkstra(source);
+
+        Node curr = target;
+        while (curr != null) {
+            path.add(0, curr);
+            if (curr.equals(source)) {
+                return path;
+            } else {
+                curr = parents.get(curr);
+            }
+        }
+
+        path.clear();
+        return path;
+    }
+
+    static void checkIfDAG(Node source, ArrayList<Node> visited, Stack<Node> recursion) {
         if(recursion.contains(source)) {
             isDAG = false;
             return;
@@ -261,17 +259,21 @@ public class GraphAlgorithms {
         recursion.add(source);
         for (Edge edge : adjacencyList.get(source)) {
             Node neighbor = edge.getSucceedingNode();
-            checkDag(neighbor,visited,recursion);
+            checkIfDAG(neighbor,visited,recursion);
         }
         recursion.pop();
     }
 
-    public static void topoSort(Node sourceNode) {
-        checkDag(sourceNode, new ArrayList<>(), new Stack<>());
+    public static boolean getIsDAG() {
+        return isDAG;
+    }
+
+    static void topologicalSort(Node sourceNode) {
+        checkIfDAG(sourceNode, new ArrayList<>(), new Stack<>());
         if(isDAG) {
             DFS(sourceNode);
             int max = 0;
-            ArrayList prevMaxes = new ArrayList<>();
+            ArrayList<Integer> prevMaxes = new ArrayList<>();
             while (topologicalSort.size() != startFinishTimes.size()) {
                 for (Map.Entry<Node, int[]> entry : startFinishTimes.entrySet()) {
                     if (entry.getValue()[1] > max && !prevMaxes.contains(entry.getValue()[1])) {
@@ -287,16 +289,9 @@ public class GraphAlgorithms {
                 max = 0;
             }
         }
-        else {
-            //This graph is a not a DAG. No TopoSort possible
-        }
     }
 
-     static ArrayList<Node> getTopoSort() {
+    public static ArrayList<Node> getTopologicalSort() {
         return topologicalSort;
-    }
-
-    static boolean isDAG() {
-        return isDAG;
     }
 }

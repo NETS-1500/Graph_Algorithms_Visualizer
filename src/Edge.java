@@ -63,6 +63,7 @@ public class Edge {
         String weightStr = Integer.toString(getWeight());
         int x = (a.x + b.x) / 2;
         int y = (a.y + b.y) / 2;
-        g.drawString(weightStr, x - g.getFontMetrics().stringWidth(weightStr) / 2, y - g.getFontMetrics().getHeight());
+        g.drawString(weightStr, x - g.getFontMetrics().stringWidth(weightStr) / 2,
+                y - g.getFontMetrics().getHeight());
     }
 }

@@ -261,9 +261,9 @@ class GraphCanvas extends JPanel implements MouseListener {
 
             GraphAlgorithms.createAdjacencyList(nodes, edges);
 
-            GraphAlgorithms.reset();
+            GraphAlgorithms.resetAlgorithmVariables();
             GraphAlgorithms.BFS(startNodeBFS);
-            ArrayList<Node> bfs = GraphAlgorithms.getBfsOrdering();
+            ArrayList<Node> bfs = GraphAlgorithms.getBFSOrdering();
 
             String bfsString = "";
             for (int i = 0; i < bfs.size(); i++) {
@@ -273,9 +273,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                 }
             }
 
-            JOptionPane.showMessageDialog(this, bfsString, "BFS order of discovery:",
+            JOptionPane.showMessageDialog(this, bfsString, "BFS Ordering",
                     JOptionPane.INFORMATION_MESSAGE);
-
 
             startNodeBFS = null;
             mode = null;
@@ -295,23 +294,25 @@ class GraphCanvas extends JPanel implements MouseListener {
 
             GraphAlgorithms.createAdjacencyList(nodes, edges);
 
-            GraphAlgorithms.reset();
+            GraphAlgorithms.resetAlgorithmVariables();
             GraphAlgorithms.DFS(startNodeDFS);
 
-            ArrayList<Node> dfs = GraphAlgorithms.getDfsOrdering();
-            String dfsString = "";
+            ArrayList<Node> dfs = GraphAlgorithms.getDFSOrdering();
+            StringBuilder dfsString = new StringBuilder();
             for (int i = 0; i < dfs.size(); i++) {
                 Node n = dfs.get(i);
-                dfsString += n.getName() + ": d/f time = " + GraphAlgorithms.getStartFinTimes().get(n)[0] +
-                        "/" + GraphAlgorithms.getStartFinTimes().get(n)[1];
+                dfsString.append(n.getName()).
+                        append(": D/F time = ").
+                        append(GraphAlgorithms.getStartFinishTimes().get(n)[0]).
+                        append("/").append(GraphAlgorithms.getStartFinishTimes().get(n)[1]);
 
                 if (i != dfs.size() - 1) {
-                    dfsString += "\n";
+                    dfsString.append("\n");
                 }
             }
 
-            JOptionPane.showMessageDialog(this, dfsString, "DFS order of discovery:",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, dfsString.toString(),
+                    "DFS Order of Discovery:", JOptionPane.INFORMATION_MESSAGE);
 
             startNodeDFS = null;
             mode = null;
@@ -338,22 +339,22 @@ class GraphCanvas extends JPanel implements MouseListener {
                 }
 
                 GraphAlgorithms.createAdjacencyList(nodes, edges);
-                GraphAlgorithms.reset();
+                GraphAlgorithms.resetAlgorithmVariables();
 
-                LinkedList<Node> path = GraphAlgorithms.shortestPathTo(startNodeShortPath, endNodeShortPath);
+                LinkedList<Node> path = GraphAlgorithms.shortestPath(startNodeShortPath, endNodeShortPath);
                 if (path.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "There is no path from " +
                                     startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + "!", "Shortest Path",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    String pathString = "";
+                    StringBuilder pathString = new StringBuilder();
                     for (int i = 0; i < path.size(); i++) {
-                        pathString += path.get(i).getName();
+                        pathString.append(path.get(i).getName());
                         if (i != path.size() - 1) {
-                            pathString += " -> ";
+                            pathString.append(" -> ");
                         }
                     }
-                    JOptionPane.showMessageDialog(this, pathString, "Shortest Path from " +
+                    JOptionPane.showMessageDialog(this, pathString.toString(), "Shortest Path from " +
                                     startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -376,24 +377,24 @@ class GraphCanvas extends JPanel implements MouseListener {
 
             GraphAlgorithms.createAdjacencyList(nodes, edges);
 
-            GraphAlgorithms.reset();
-            GraphAlgorithms.topoSort(startNodeTopoSort);
+            GraphAlgorithms.resetAlgorithmVariables();
+            GraphAlgorithms.topologicalSort(startNodeTopoSort);
 
-            if (!GraphAlgorithms.isDAG()) {
+            if (!GraphAlgorithms.getIsDAG()) {
                 JOptionPane.showMessageDialog(this, "This graph is not a DAG! " +
                         "Please remove any cycles and try again :)", "Invalid graph!", JOptionPane.ERROR_MESSAGE);
             } else {
-                ArrayList<Node> toposort = GraphAlgorithms.getTopoSort();
-                String toposortString = "";
-                for (int i = 0; i < toposort.size(); i++) {
-                    toposortString += toposort.get(i).getName();
-                    if (i != toposort.size() - 1) {
-                        toposortString += " -> ";
+                ArrayList<Node> topoSort = GraphAlgorithms.getTopologicalSort();
+                StringBuilder topoSortString = new StringBuilder();
+                for (int i = 0; i < topoSort.size(); i++) {
+                    topoSortString.append(topoSort.get(i).getName());
+                    if (i != topoSort.size() - 1) {
+                        topoSortString.append(" -> ");
                     }
                 }
 
-                JOptionPane.showMessageDialog(this, toposortString, "Topological sorting from " +
-                                startNodeTopoSort.getName() + ":",
+                JOptionPane.showMessageDialog(this, topoSortString.toString(),
+                        "Topological sorting from " + startNodeTopoSort.getName() + ":",
                         JOptionPane.INFORMATION_MESSAGE);
             }
 

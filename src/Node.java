@@ -1,6 +1,6 @@
 import java.awt.*;
 
-class Node implements Comparable{
+class Node implements Comparable {
     private static final int RADIUS = 15;
 
     private final String name;
