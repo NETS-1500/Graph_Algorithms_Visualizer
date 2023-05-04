@@ -312,7 +312,7 @@ class GraphCanvas extends JPanel implements MouseListener {
             }
 
             JOptionPane.showMessageDialog(this, dfsString.toString(),
-                    "DFS Order of Discovery:", JOptionPane.INFORMATION_MESSAGE);
+                    "DFS Order of Discovery", JOptionPane.INFORMATION_MESSAGE);
 
             startNodeDFS = null;
             mode = null;
@@ -357,7 +357,7 @@ class GraphCanvas extends JPanel implements MouseListener {
 
                     pathString.append("\nLength of shortest path: " + GraphAlgorithms.getPathWeight());
                     JOptionPane.showMessageDialog(this, pathString.toString(), "Shortest Path from " +
-                                    startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
+                                    startNodeShortPath.getName() + " to " + endNodeShortPath.getName(),
                             JOptionPane.INFORMATION_MESSAGE);
                 }
 
@@ -397,7 +397,7 @@ class GraphCanvas extends JPanel implements MouseListener {
                 }
 
                 JOptionPane.showMessageDialog(this, topoSortString.toString(),
-                        "Topological sorting from " + startNodeTopoSort.getName() + ":",
+                        "Topological sorting from " + startNodeTopoSort.getName(),
                         JOptionPane.INFORMATION_MESSAGE);
             }
 
