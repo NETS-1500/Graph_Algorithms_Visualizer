@@ -354,6 +354,8 @@ class GraphCanvas extends JPanel implements MouseListener {
                             pathString.append(" -> ");
                         }
                     }
+                    int numEdges = path.size() - 1;
+                    pathString.append("\nLength of shortest path: " + numEdges);
                     JOptionPane.showMessageDialog(this, pathString.toString(), "Shortest Path from " +
                                     startNodeShortPath.getName() + " to " + endNodeShortPath.getName() + ":",
                             JOptionPane.INFORMATION_MESSAGE);
